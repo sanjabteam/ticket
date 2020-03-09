@@ -1,0 +1,46 @@
+{
+    "name": "sanjabteam/sanjab-ticket",
+    "description": "Ticket package for sanjab admin panel.",
+    "keywords": [
+        "sanjabteam",
+        "sanjab-ticket"
+    ],
+    "homepage": "https://github.com/sanjabteam/sanjab-ticket",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "amir alizadeh",
+            "email": "amiralizadeh9480@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "illuminate/support": "^5.8|^6|^7",
+        "sanjabteam/sanjab": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "SanjabTicket\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SanjabTicket\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SanjabTicket\\SanjabTicketServiceProvider"
+            ],
+            "aliases": {
+                "SanjabTicket": "SanjabTicket\\SanjabTicketFacade"
+            }
+        }
+    }
+}

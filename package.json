@@ -1,0 +1,36 @@
+{
+    "name": "sanjab-ticket",
+    "description": "Ticketing for sanjab (https://github.com/sanjabteam/sanjab)",
+    "version": "0.0.1",
+    "license": "MIT",
+    "private": false,
+    "author": "Amir Alizadeh <amiralizadeh9480@gmail.com>",
+    "main": "./resources/js/sanjab-ticket.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sanjabteam/sanjab-ticket.git"
+    },
+    "dependencies": {
+        "@uppy/locales": "^1.11.3",
+        "axios": "^0.19.2",
+        "bootstrap": "^4.4.1",
+        "bootstrap-material-design": "^4.1.2",
+        "bootstrap-vue": "^2.5.0",
+        "cross-env": "^7.0.0",
+        "jquery": "^3.4.1",
+        "jquery-ui-bundle": "^1.12.1-migrate",
+        "laravel-mix": "^5.0.1",
+        "lodash": "^4.17.15",
+        "material-dashboard": "^2.1.0",
+        "material-design-icons": "^3.0.1",
+        "moment": "^2.24.0",
+        "popper.js": "^1.16.1",
+        "requirejs": "^2.3.6",
+        "sass": "^1.25.0",
+        "sass-loader": "^8.0.2",
+        "sweetalert2": "^9.8.2",
+        "uppy": "^1.9.2",
+        "vue": "^2.6.11",
+        "vue-template-compiler": "^2.6.11"
+    }
+}

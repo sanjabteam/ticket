@@ -1,0 +1,13 @@
+/.idea
+/.vscode
+/node_modules
+/src
+/vendor
+.editorconfig
+.gitignore
+.gitattributes
+.scrutinizer.yml
+.styleci.yml
+.travis.yml
+composer.json
+composer.lock
