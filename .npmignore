@@ -1,7 +1,13 @@
 /.idea
 /.vscode
 /node_modules
+/images
+/config
+/database
+/resources/lang
+/resources/views
 /src
+/tests
 /vendor
 .editorconfig
 .gitignore
@@ -11,3 +17,5 @@
 .travis.yml
 composer.json
 composer.lock
+CHANGELOG.md
+phpunit.xml.dist

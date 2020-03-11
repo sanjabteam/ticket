@@ -11,12 +11,12 @@
         "url": "https://github.com/sanjabteam/ticket.git"
     },
     "dependencies": {
-        "@uppy/locales": "^1.11.3",
+        "@uppy/locales": "^1.11.5",
         "axios": "^0.19.2",
         "bootstrap": "^4.4.1",
         "bootstrap-material-design": "^4.1.2",
-        "bootstrap-vue": "^2.5.0",
-        "cross-env": "^7.0.0",
+        "bootstrap-vue": "^2.6.1",
+        "cross-env": "^7.0.2",
         "jquery": "^3.4.1",
         "jquery-ui-bundle": "^1.12.1-migrate",
         "laravel-mix": "^5.0.1",
@@ -26,10 +26,10 @@
         "moment": "^2.24.0",
         "popper.js": "^1.16.1",
         "requirejs": "^2.3.6",
-        "sass": "^1.25.0",
+        "sass": "^1.26.2",
         "sass-loader": "^8.0.2",
-        "sweetalert2": "^9.8.2",
-        "uppy": "^1.9.2",
+        "sweetalert2": "^9.10.0",
+        "uppy": "^1.9.3",
         "vue": "^2.6.11",
         "vue-template-compiler": "^2.6.11"
     }
