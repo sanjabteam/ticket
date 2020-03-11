@@ -1,11 +1,11 @@
 {
-    "name": "sanjabteam/sanjab-ticket",
+    "name": "sanjabteam/ticket",
     "description": "Ticket package for sanjab admin panel.",
     "keywords": [
         "sanjabteam",
-        "sanjab-ticket"
+        "ticket"
     ],
-    "homepage": "https://github.com/sanjabteam/sanjab-ticket",
+    "homepage": "https://github.com/sanjabteam/ticket",
     "license": "MIT",
     "type": "library",
     "authors": [

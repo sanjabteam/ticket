@@ -6,7 +6,7 @@
 You can install the package via composer:
 
 ```bash
-composer require sanjabteam/sanjab-ticket
+composer require sanjabteam/ticket
 ```
 
 ## License

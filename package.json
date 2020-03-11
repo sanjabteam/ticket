@@ -8,7 +8,7 @@
     "main": "./resources/js/sanjab-ticket.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/sanjabteam/sanjab-ticket.git"
+        "url": "https://github.com/sanjabteam/ticket.git"
     },
     "dependencies": {
         "@uppy/locales": "^1.11.3",
