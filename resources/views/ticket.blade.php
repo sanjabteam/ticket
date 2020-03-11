@@ -25,8 +25,8 @@
                                     @endforeach
                                 </p>
                             </b-col>
-                            @if(count(config('sanjab-ticket.fields')) > 0)
-                                @foreach(array_chunk(config('sanjab-ticket.fields'), max(count(config('sanjab-ticket.fields')), 1), true) as $chunkedFields)
+                            @if(count(config('sanjab-ticket.database.fields')) > 0)
+                                @foreach(array_chunk(config('sanjab-ticket.database.fields'), max(count(config('sanjab-ticket.database.fields'))/2, 1), true) as $chunkedFields)
                                     <b-col :sm="12" :md="6">
                                         @foreach($chunkedFields as $field => $fieldTitle)
                                             <p><b>{{ $fieldTitle }}</b>: <span>{{ $ticket->user->{ $field } }}</span></p>
@@ -41,12 +41,6 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('header')
-    <style>
-        html[dir="rtl"] {}
-    </style>
 @endsection
 
 @section('footer')

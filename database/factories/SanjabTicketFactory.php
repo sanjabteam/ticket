@@ -15,7 +15,7 @@ $factory->define(Ticket::class, function (Faker $faker) {
         'priority_id'   => optional(TicketPriority::inRandomOrder()->first())->id,
         'subject'       => $faker->word,
         'closed_at'     => $faker->numberBetween(0, 5) == 0 ? $faker->dateTimeBetween('-30 days', 'now') : null,
-        'created_at'    => $faker->dateTimeBetween('-30 days', 'now')
+        'created_at'    => $faker->dateTimeBetween('-30 days', '-5 hours')
     ];
 });
 

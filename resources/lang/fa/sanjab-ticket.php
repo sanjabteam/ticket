@@ -18,7 +18,13 @@ return [
     'subject' => 'موضوع',
     'category' => 'دسته بندی',
     'priority' => 'الویت',
+    'categories' => 'دسته بندی ها',
+    'priorities' => 'الویت ها',
     'status' => 'وضعیت',
     'responsers' => 'پاسخگویان',
     'you' => 'شما',
+    'name' => 'نام',
+    'color' => 'رنگ',
+    'ticket_settings' => 'تنظیمات تیکت',
+    'new_ticket' => 'تیکت جدید',
 ];

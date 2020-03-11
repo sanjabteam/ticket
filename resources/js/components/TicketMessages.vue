@@ -72,8 +72,15 @@
         },
         mounted () {
             var self = this;
+            this.$sanjabStore.commit('disableNotifications');
             if (this.ticket.messages instanceof Array) {
                 this.messages = this.ticket.messages;
+            }
+            if (typeof Storage !== "undefined") {
+                let draftedMessage = localStorage.getItem('sanjab_ticket_draft_message_' + this.ticket.id);
+                if (typeof draftedMessage === 'string' && draftedMessage.length > 0) {
+                    this.newMessage = draftedMessage;
+                }
             }
             setTimeout(function () {
                 self.scrollToBottom();
@@ -84,7 +91,7 @@
             loadMessages() {
                 var self = this;
                 this.eventSource = new EventSource(sanjabUrl('/modules/tickets/' + this.ticket.id + '?last_created_at=' + this.lastMessage.created_at));
-                this.eventSource.addEventListener('message', event => {
+                this.eventSource.addEventListener('message', function (event) {
                     if (event.data == 'seen') {
                         for (let i in self.messages) {
                             if (self.messages[i].seen_by == null && self.messages[i].user.id != self.ticket.user.id) {
@@ -119,10 +126,6 @@
             send() {
                 var self = this;
                 self.loading = true;
-                if (self.eventSource) {
-                    self.eventSource.close();
-                    self.eventSource = null;
-                }
                 axios.post(sanjabUrl('modules/tickets/' + this.ticket.id + '/send'), {
                     text: self.newMessage,
                     file: self.newMessageFile.length > 0 ? self.newMessageFile[0] : null
@@ -130,7 +133,6 @@
                     self.loading = false;
                     self.newMessage = "";
                     self.newMessageFile = [];
-                    self.loadMessages();
                 }).catch(function (error) {
                     self.loading = false;
                     console.error(error);
@@ -159,6 +161,13 @@
                     return lastMessage;
                 }
                 return null;
+            }
+        },
+        watch: {
+            newMessage(newValue, oldValue) {
+                if (typeof Storage !== "undefined") {
+                    localStorage.setItem('sanjab_ticket_draft_message_' + this.ticket.id, newValue);
+                }
             }
         },
     }

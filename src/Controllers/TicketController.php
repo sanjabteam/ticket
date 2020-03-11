@@ -5,6 +5,7 @@ namespace SanjabTicket\Controllers;
 use stdClass;
 use Exception;
 use Carbon\Carbon;
+use Sanjab\Helpers\Action;
 use Sanjab\Cards\StatsCard;
 use Sanjab\Widgets\IdWidget;
 use Illuminate\Http\Request;
@@ -15,15 +16,16 @@ use Sanjab\Helpers\FilterOption;
 use Sanjab\Helpers\MaterialIcons;
 use Sanjab\Helpers\CrudProperties;
 use Illuminate\Support\Facades\Auth;
-use Sanjab\Controllers\CrudController;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
+use Sanjab\Controllers\CrudController;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use Sanjab\Helpers\Action;
 use SanjabTicket\Resources\TicketMessageResource;
 use Sanjab\Widgets\Relation\BelongsToPickerWidget;
+use SanjabTicket\Models\TicketMessage;
 
 class TicketController extends CrudController
 {
@@ -40,7 +42,9 @@ class TicketController extends CrudController
                 ->creatable(false)
                 ->editable(false)
                 ->deletable(false)
-                ->defaultOrder('sanjab_tickets.updated_at');
+                ->defaultOrder('sanjab_tickets.updated_at')
+                ->autoRefresh(10)
+                ->autoRefreshNotification(true);
     }
 
     protected function init(string $type, Model $item = null): void
@@ -48,7 +52,8 @@ class TicketController extends CrudController
         $this->widgets[] = IdWidget::create();
 
         $this->widgets[] = BelongsToPickerWidget::create('user', trans('sanjab-ticket::sanjab-ticket.user'))
-                            ->format(config('sanjab-ticket.user.format'));
+                            ->format(config('sanjab-ticket.database.format'))
+                            ->ajax(true);
 
         $this->widgets[] = TextWidget::create('subject', trans('sanjab-ticket::sanjab-ticket.subject'));
 
@@ -84,7 +89,8 @@ class TicketController extends CrudController
         $this->widgets[] = TextWidget::create('updated_at', trans('sanjab-ticket::sanjab-ticket.updated_at'))
                             ->customModifyResponse(function (stdClass $response, Model $item = null) {
                                 $response->updated_at = $item->updated_at_diff;
-                            });
+                            })
+                            ->searchable(false);
 
         $this->filters[] = FilterOption::create(trans('sanjab-ticket::sanjab-ticket.unanswered'))
                                 ->query(function ($query) {
@@ -110,6 +116,24 @@ class TicketController extends CrudController
                                 ->query(function ($query) {
                                     $query->closed();
                                 });
+
+        $this->cards[] = StatsCard::create(trans('sanjab-ticket::sanjab-ticket.unanswered_tickets'))
+                            ->value(Ticket::unanswered()->count())
+                            ->link(route('sanjab.modules.'.static::property('route').'.index'))
+                            ->variant('warning')
+                            ->icon(static::property('icon'));
+
+        $this->cards[] = StatsCard::create(trans('sanjab-ticket::sanjab-ticket.unread_tickets'))
+                            ->value(Ticket::unread()->count())
+                            ->link(route('sanjab.modules.'.static::property('route').'.index'))
+                            ->variant('warning')
+                            ->icon(static::property('icon'));
+
+        $this->cards[] = StatsCard::create(trans('sanjab-ticket::sanjab-ticket.closed'))
+                            ->value(Ticket::closed()->count())
+                            ->link(route('sanjab.modules.'.static::property('route').'.index'))
+                            ->variant('success')
+                            ->icon(static::property('icon'));
 
         $this->actions[] = Action::create(trans('sanjab-ticket::sanjab-ticket.close'))
                                 ->action('close')
@@ -141,6 +165,16 @@ class TicketController extends CrudController
                 while (true) {
                     $ticket->markSeen();
                     $messages = $ticket->messages()->where('created_at', '>', Carbon::createFromTimestamp($lastCreatedAt))->get();
+
+                    // Mark previous messages as seen.
+                    if ($ticket->messages()->whereNotNull('seen_id')->whereIn('id', $unseenMessages)->exists()) {
+                        $unseenMessages = [];
+                        echo "data: seen\n\n";
+                        ob_flush();
+                        flush();
+                    }
+
+                    // Show new messages.
                     if ($messages->count() > 0) {
                         $unseenMessages = $unseenMessagesQuery->get()->pluck('id')->toArray();
                         $lastCreatedAt = $messages->max('created_at')->timestamp;
@@ -148,13 +182,7 @@ class TicketController extends CrudController
                         ob_flush();
                         flush();
                     }
-                    // Mark previous messages as seen
-                    if ($ticket->messages()->whereNotNull('seen_id')->whereIn('id', $unseenMessages)->exists()) {
-                        $unseenMessages = [];
-                        echo "data: seen\n\n";
-                        ob_flush();
-                        flush();
-                    }
+
                     // Prevent Maximum execution time of N seconds exceeded error.
                     if ((microtime(true) - LARAVEL_START) + 3 >= intval(ini_get('max_execution_time'))) {
                         echo "data: close\n\n";
@@ -188,6 +216,21 @@ class TicketController extends CrudController
     {
         $ticket->close();
         return ['success' => true];
+    }
+
+    /**
+     * Should play notification sound or not.
+     *
+     * @param Request $request
+     * @param LengthAwarePaginator $items
+     * @return bool|string
+     */
+    protected function notification(Request $request, LengthAwarePaginator $items)
+    {
+        $lastCreatedAt = Session::get('sanjab_notification_last_message_created_at');
+        $result = config('sanjab-ticket.notifications.new_ticket') == null && $request->input('autoRefreshing') == true && $lastCreatedAt && TicketMessage::where('created_at', '>', Carbon::createFromTimestamp($lastCreatedAt))->exists();
+        Session::put('sanjab_notification_last_message_created_at', TicketMessage::latest()->first()->created_at->timestamp);
+        return $result ? trans("sanjab-ticket::sanjab-ticket.new_ticket") : false;
     }
 
     /**

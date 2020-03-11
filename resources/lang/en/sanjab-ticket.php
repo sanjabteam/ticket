@@ -18,7 +18,13 @@ return [
     'subject' => 'Subject',
     'category' => 'Category',
     'priority' => 'Priority',
+    'categories' => 'Categories',
+    'priorities' => 'Priorities',
     'status' => 'Status',
     'responsers' => 'Responsers',
     'you' => 'You',
+    'name' => 'Name',
+    'color' => 'Color',
+    'ticket_settings' => 'Ticket Settings',
+    'new_ticket' => 'New Ticket',
 ];
