@@ -7,6 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use SanjabTicket\Observers\TicketObserver;
 
+/**
+ * @property int $user_id                                user who created ticket.
+ * @property null|int $category_id                       category of ticket.
+ * @property null|int $priority_id                       priority of ticket.
+ * @property string $subject                             ticket subject.
+ * @property null|\Illuminate\Support\Carbon $closed_at  ticket close datetime. if was null then ticket is still open.
+ * @property-read string $status                         ticket status. Possible values: ('unread', 'unanswered', 'answered', 'closed', 'unknown')
+ * @property-read string $status_localed                 ticket status but translated.
+ * @property-read string $created_at_diff                created_at in diff for humans format.
+ * @property-read string $updated_at_diff                updated_at in diff for humans format.
+ */
 class Ticket extends Model
 {
     /**
@@ -35,7 +46,7 @@ class Ticket extends Model
      * @var array
      */
     protected $casts = [
-        'closed_at' => 'timestamp',
+        'closed_at' => 'datetime',
     ];
 
     /**

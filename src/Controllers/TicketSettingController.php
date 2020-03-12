@@ -29,13 +29,16 @@ class TicketSettingController extends SettingController
                             })
                             ->customStore(function (Request $request, Model $model) {
                                 if (is_array($request->input('priorities'))) {
+                                    $priorityIds = [];
                                     foreach ($request->input('priorities') as $priority) {
                                         if (isset($priority['id'])) {
                                             TicketPriority::find($priority['id'])->update($priority);
+                                            $priorityIds[] = $priority['id'];
                                         } else {
-                                            TicketPriority::create($priority);
+                                            $priorityIds[] = TicketPriority::create($priority)->id;
                                         }
                                     }
+                                    TicketPriority::whereNotIn('id', $priorityIds)->delete();
                                 }
                             })
                             ->addWidget(TextWidget::create('name', trans('sanjab-ticket::sanjab-ticket.name'))->cols(6)->required())
@@ -47,13 +50,16 @@ class TicketSettingController extends SettingController
                             })
                             ->customStore(function (Request $request, Model $model) {
                                 if (is_array($request->input('categories'))) {
-                                    foreach ($request->input('categories') as $priority) {
-                                        if (isset($priority['id'])) {
-                                            TicketCategory::find($priority['id'])->update($priority);
+                                    $categoryIds = [];
+                                    foreach ($request->input('categories') as $category) {
+                                        if (isset($category['id'])) {
+                                            TicketCategory::find($category['id'])->update($category);
+                                            $categoryIds[] = $category['id'];
                                         } else {
-                                            TicketCategory::create($priority);
+                                            $categoryIds[] = TicketCategory::create($category)->id;
                                         }
                                     }
+                                    TicketCategory::whereNotIn('id', $categoryIds)->delete();
                                 }
                             })
                             ->addWidget(TextWidget::create('name', trans('sanjab-ticket::sanjab-ticket.name'))->cols(6)->required())

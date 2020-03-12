@@ -6,6 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use SanjabTicket\Observers\TicketMessageObserver;
 
+/**
+ * @property int $ticket_id                             ticket of this message.
+ * @property int $user_id                               user who sent this message.
+ * @property string $text                               message text.
+ * @property null|string $file                          file path.
+ * @property null|int $seen_id                          who seen this message.
+ * @property null|\Illuminate\Support\Carbon $seen_at   when this message seen.
+ * @property-read string $created_at_diff               created_at in diff for humans format.
+ * @property-read string $updated_at_diff               updated_at in diff for humans format.
+ * @property-read null|string $file_link                full url of file.
+ */
 class TicketMessage extends Model
 {
     /**
@@ -35,7 +46,7 @@ class TicketMessage extends Model
      * @var array
      */
     protected $casts = [
-        'seen_at' => 'timestamp',
+        'seen_at' => 'datetime',
     ];
 
     /**

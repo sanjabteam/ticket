@@ -4,6 +4,10 @@ namespace SanjabTicket\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $name           category name
+ * @property null|string $color     label color
+ */
 class TicketCategory extends Model
 {
     /**
