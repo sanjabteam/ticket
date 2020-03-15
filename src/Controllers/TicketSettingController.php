@@ -18,7 +18,7 @@ class TicketSettingController extends SettingController
     protected static function properties(): SettingProperties
     {
         return SettingProperties::create('sanjab-ticket')
-            ->title(trans('sanjab-ticket::sanjab-ticket.ticket_settings'));
+                                ->title(trans('sanjab-ticket::sanjab-ticket.ticket_settings'));
     }
 
     protected function init(): void

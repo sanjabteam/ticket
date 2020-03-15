@@ -42,7 +42,8 @@ class TicketController extends CrudController
                 ->creatable(false)
                 ->editable(false)
                 ->deletable(false)
-                ->defaultOrder('sanjab_tickets.updated_at')
+                ->defaultOrder('closed_at')
+                ->defaultOrderDirection('asc')
                 ->autoRefresh(10)
                 ->autoRefreshNotification(true);
     }
@@ -62,8 +63,8 @@ class TicketController extends CrudController
                             ->indexTag('ticket-info-view')
                             ->customModifyResponse(function (stdClass $response, Model $item = null) {
                                 $response->category = [
-                                    'text' => $item->category->name,
-                                    'color' => $item->category->color
+                                    'text' => optional($item->category)->name,
+                                    'color' => optional($item->category)->color
                                 ];
                             });
 
@@ -72,8 +73,8 @@ class TicketController extends CrudController
                             ->indexTag('ticket-info-view')
                             ->customModifyResponse(function (stdClass $response, Model $item = null) {
                                 $response->priority = [
-                                    'text' => $item->priority->name,
-                                    'color' => $item->priority->color
+                                    'text' => optional($item->priority)->name,
+                                    'color' => optional($item->priority)->color
                                 ];
                             });
 
