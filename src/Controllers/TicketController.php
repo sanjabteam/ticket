@@ -229,7 +229,7 @@ class TicketController extends CrudController
     protected function notification(Request $request, LengthAwarePaginator $items)
     {
         $lastCreatedAt = Session::get('sanjab_notification_last_message_created_at');
-        $result = config('sanjab-ticket.notifications.new_ticket') == null && $request->input('autoRefreshing') == true && $lastCreatedAt && TicketMessage::where('created_at', '>', Carbon::createFromTimestamp($lastCreatedAt))->exists();
+        $result = config('sanjab-ticket.notifications.new_ticket.admin') == null && $request->input('autoRefreshing') == true && $lastCreatedAt && TicketMessage::where('created_at', '>', Carbon::createFromTimestamp($lastCreatedAt))->exists();
         Session::put('sanjab_notification_last_message_created_at', optional(optional(TicketMessage::latest()->first())->created_at)->timestamp);
         return $result ? trans("sanjab-ticket::sanjab-ticket.new_ticket") : false;
     }

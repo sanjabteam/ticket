@@ -115,6 +115,16 @@ class Ticket extends Model
         return $this->hasOne(TicketMessage::class)->latest();
     }
 
+    /**
+     * First message inside this ticket.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function firstMessage()
+    {
+        return $this->hasOne(TicketMessage::class)->old();
+    }
+
     /* -------------------------------- Functions ------------------------------- */
 
     /**

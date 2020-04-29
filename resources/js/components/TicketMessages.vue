@@ -54,7 +54,7 @@
         props: {
             ticket: {
                 type: Object,
-                default: () => {}
+                default: () => {return {};}
             },
             initialMessages: {
                 type: Array,
