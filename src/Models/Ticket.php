@@ -122,7 +122,7 @@ class Ticket extends Model
      */
     public function firstMessage()
     {
-        return $this->hasOne(TicketMessage::class)->old();
+        return $this->hasOne(TicketMessage::class)->oldest();
     }
 
     /* -------------------------------- Functions ------------------------------- */
