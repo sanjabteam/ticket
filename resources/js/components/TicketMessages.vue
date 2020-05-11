@@ -113,6 +113,7 @@
                                     playNotification = true;
                                 }
                             }
+                            self.messages = self.messages.slice();
                             if (playNotification) {
                                 sanjabPlayNotificationSound();
                             }

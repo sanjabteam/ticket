@@ -163,6 +163,7 @@ class TicketController extends CrudController
                 $lastCreatedAt = $request->input('last_created_at');
                 $unseenMessagesQuery = $ticket->messages()->select('id')->where('user_id', '!=', $ticket->user_id)->whereNull('seen_id');
                 $unseenMessages = $unseenMessagesQuery->get()->pluck('id')->toArray();
+                $lastMessageTime = time();
                 while (true) {
                     $ticket->markSeen();
                     $messages = $ticket->messages()->where('created_at', '>', Carbon::createFromTimestamp($lastCreatedAt))->get();
@@ -173,6 +174,7 @@ class TicketController extends CrudController
                         echo "data: seen\n\n";
                         ob_flush();
                         flush();
+                        $lastMessageTime = time();
                     }
 
                     // Show new messages.
@@ -182,6 +184,7 @@ class TicketController extends CrudController
                         echo "data: ".json_encode(TicketMessageResource::collection($messages)->toArray($request))."\n\n";
                         ob_flush();
                         flush();
+                        $lastMessageTime = time();
                     }
 
                     // Prevent Maximum execution time of N seconds exceeded error.
@@ -191,6 +194,15 @@ class TicketController extends CrudController
                         flush();
                         return;
                     }
+
+                    // Prevent keep alive timeout
+                    if (time() - $lastMessageTime >= 10) {
+                        echo "data: []\n\n";
+                        ob_flush();
+                        flush();
+                        $lastMessageTime = time();
+                    }
+
                     usleep(800000);
                 }
             });
