@@ -68,6 +68,7 @@
                 newMessage: "",
                 newMessageFile: [],
                 eventSource: null,
+                ajaxTimeoutHandler: null,
             }
         },
         mounted () {
@@ -86,43 +87,82 @@
                 self.scrollToBottom();
             }, 100);
             this.loadMessages();
+            document.addEventListener('visibilitychange', this.changeTypeHandler);
+            window.addEventListener('focus', this.changeTypeHandler);
+            sanjabBroadcastChannel.addEventListener('message', this.changeTypeHandler);
+        },
+        destroyed() {
+            document.removeEventListener('visibilitychange', this.changeTypeHandler);
+            window.removeEventListener('focus', this.changeTypeHandler);
+            sanjabBroadcastChannel.addEventListener('message', this.changeTypeHandler);
         },
         methods: {
             loadMessages() {
                 var self = this;
-                this.eventSource = new EventSource(sanjabUrl('/modules/tickets/' + this.ticket.id + '?last_created_at=' + this.lastMessage.created_at));
-                this.eventSource.addEventListener('message', function (event) {
-                    if (event.data == 'seen') {
-                        for (let i in self.messages) {
-                            if (self.messages[i].seen_by == null && self.messages[i].user.id != self.ticket.user.id) {
-                                self.messages[i].seen_by = {id: self.ticket.user.id, name: self.ticket.user.name};
-                            }
-                        }
-                        self.$forceUpdate();
-                    } else if (event.data == 'close') {
-                        self.eventSource.close();
-                        self.eventSource = null;
-                        self.loadMessages();
-                    } else {
-                        let newMessages = JSON.parse(event.data);
-                        if (newMessages.length > 0) {
-                            let playNotification = false;
-                            for (let i in newMessages) {
-                                self.messages.push(newMessages[i]);
-                                if (newMessages[i].user.id == self.ticket.user.id) {
-                                    playNotification = true;
+                if (typeof sanjabActiveBrowserTabId == 'undefined') {
+                    return setTimeout(() => self.loadMessages(), 10);
+                }
+                sanjabBroadcastChannel.postMessage({type: 'load_ticket_messages'});
+                if (sanjabBrowserTabId == sanjabActiveBrowserTabId) {
+                    this.loadEventSource();
+                } else {
+                    this.loadAjax();
+                }
+            },
+            loadEventSource() {
+                var self = this;
+                if (self.eventSource == null) {
+                    this.eventSource = new EventSource(sanjabUrl('/modules/tickets/' + this.ticket.id + '?last_created_at=' + this.lastMessage.created_at));
+                    this.eventSource.addEventListener('message', function (event) {
+                        if (event.data == 'seen') {
+                            for (let i in self.messages) {
+                                if (self.messages[i].seen_by == null && self.messages[i].user.id != self.ticket.user.id) {
+                                    self.messages[i].seen_by = {id: self.ticket.user.id, name: self.ticket.user.name};
                                 }
                             }
-                            self.messages = self.messages.slice();
-                            if (playNotification) {
-                                sanjabPlayNotificationSound();
-                            }
-                            setTimeout(function () {
-                                self.scrollToBottom();
-                            }, 100);
+                            self.$forceUpdate();
+                        } else if (event.data == 'close') {
+                            self.eventSource.close();
+                            self.eventSource = null;
+                            self.loadMessages();
+                        } else {
+                            let newMessages = JSON.parse(event.data);
+                            self.handleNewMessages(newMessages);
+                        }
+                    }, false);
+                }
+            },
+            loadAjax() {
+                var self = this;
+                axios.get(sanjabUrl('/modules/tickets/' + this.ticket.id + '?last_created_at=' + this.lastMessage.created_at))
+                    .then(function (response) {
+                        self.handleNewMessages(response.data);
+                    })
+                    .catch((e) => console.error(e))
+                    .then(function () {
+                        if (self.eventSource == null) {
+                            self.ajaxTimeoutHandler = setTimeout(() => self.loadAjax(), 10000);
+                        }
+                    });
+            },
+            handleNewMessages(newMessages) {
+                if (newMessages.length > 0) {
+                    let playNotification = false;
+                    for (let i in newMessages) {
+                        this.messages.push(newMessages[i]);
+                        if (newMessages[i].user.id == this.ticket.user.id) {
+                            playNotification = true;
                         }
                     }
-                }, false);
+                    this.messages = this.messages.slice();
+                    if (playNotification) {
+                        sanjabPlayNotificationSound();
+                    }
+                    var self = this;
+                    setTimeout(function () {
+                        self.scrollToBottom();
+                    }, 100);
+                }
             },
             send() {
                 var self = this;
@@ -143,6 +183,21 @@
                         sanjabHttpError(error.response.status);
                     }
                 });
+            },
+            changeTypeHandler() {
+                return setTimeout(() => this.changeType(), 1000);
+            },
+            changeType() {
+                if (this.eventSource && sanjabBrowserTabId != sanjabActiveBrowserTabId) {
+                    this.eventSource.close();
+                    this.eventSource = null;
+                    this.loadMessages();
+                }
+                if (this.ajaxTimeoutHandler && sanjabBrowserTabId == sanjabActiveBrowserTabId) {
+                    clearTimeout(this.ajaxTimeoutHandler);
+                    this.ajaxTimeoutHandler = null;
+                    this.loadMessages();
+                }
             },
             scrollToBottom() {
                 $(".messages-container").animate({
