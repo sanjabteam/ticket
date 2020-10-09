@@ -26,10 +26,6 @@ class SanjabTicketServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/lang' => resource_path('lang/vendor/sanjab-ticket'),
         ], 'lang');
-
-        if (!$this->app->environment('production') && class_exists('Faker\\Generator')) {
-            app(\Illuminate\Database\Eloquent\Factory::class)->load(__DIR__ . '/../database/factories');
-        }
     }
 
     /**

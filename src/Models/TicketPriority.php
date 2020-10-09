@@ -11,13 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 class TicketPriority extends Model
 {
     /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'sanjab_ticket_priorities';
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -41,5 +34,17 @@ class TicketPriority extends Model
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'priority_id');
+    }
+
+    /* -------------------------------- Functions ------------------------------- */
+
+    /**
+     * Get the table associated with the model.
+     *
+     * @return string
+     */
+    public function getTable()
+    {
+        return config('sanjab-ticket.tables.ticket_priorities', 'sanjab_ticket_priorities');
     }
 }

@@ -13,7 +13,7 @@ class CreateSanjabTicketPrioritiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sanjab_ticket_priorities', function (Blueprint $table) {
+        Schema::create(config('sanjab-ticket.tables.ticket_priorities', 'sanjab_ticket_priorities'), function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('color')->nullable();
             $table->string('name');
@@ -27,6 +27,6 @@ class CreateSanjabTicketPrioritiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sanjab_ticket_priorities');
+        Schema::dropIfExists(config('sanjab-ticket.tables.ticket_priorities', 'sanjab_ticket_priorities'));
     }
 }

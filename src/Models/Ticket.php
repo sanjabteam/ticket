@@ -3,8 +3,10 @@
 namespace SanjabTicket\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use SanjabTicket\Database\Factories\SanjabTicketFactory;
 use SanjabTicket\Observers\TicketObserver;
 
 /**
@@ -20,12 +22,7 @@ use SanjabTicket\Observers\TicketObserver;
  */
 class Ticket extends Model
 {
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'sanjab_tickets';
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
@@ -167,6 +164,26 @@ class Ticket extends Model
         $this->save();
     }
 
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return new SanjabTicketFactory;
+    }
+
+    /**
+     * Get the table associated with the model.
+     *
+     * @return string
+     */
+    public function getTable()
+    {
+        return config('sanjab-ticket.tables.tickets', 'sanjab_tickets');
+    }
+
     /* --------------------------------- Scopes --------------------------------- */
 
     /**
@@ -178,8 +195,8 @@ class Ticket extends Model
     public function scopeAnswered(Builder $query)
     {
         $query->whereNull('closed_at')->whereHas('lastMessage', function ($query) {
-            $query->whereColumn('sanjab_ticket_messages.user_id', '!=', 'sanjab_tickets.user_id')
-                ->whereRaw('sanjab_ticket_messages.created_at IN (select MAX(created_at) from sanjab_ticket_messages where sanjab_ticket_messages.ticket_id = sanjab_tickets.id)');
+            $query->whereColumn(config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').'.user_id', '!=', $this->getTable().'.user_id')
+                ->whereRaw(config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').'.created_at IN (select MAX(created_at) from '.config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').' where '.config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').'.ticket_id = '.$this->getTable().'.id)');
         });
     }
 
@@ -192,8 +209,8 @@ class Ticket extends Model
     public function scopeUnanswered(Builder $query)
     {
         $query->whereNull('closed_at')->whereHas('lastMessage', function ($query) {
-            $query->whereColumn('sanjab_ticket_messages.user_id', '=', 'sanjab_tickets.user_id')
-                ->whereRaw('sanjab_ticket_messages.created_at IN (select MAX(created_at) from sanjab_ticket_messages where sanjab_ticket_messages.ticket_id = sanjab_tickets.id)');
+            $query->whereColumn(config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').'.user_id', '=', $this->getTable().'.user_id')
+                ->whereRaw(config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').'.created_at IN (select MAX(created_at) from '.config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').' where '.config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').'.ticket_id = '.$this->getTable().'.id)');
         });
     }
 
@@ -206,9 +223,9 @@ class Ticket extends Model
     public function scopeUnread(Builder $query)
     {
         $query->whereNull('closed_at')->whereHas('lastMessage', function ($query) {
-            $query->whereColumn('sanjab_ticket_messages.user_id', '=', 'sanjab_tickets.user_id')
-                ->whereNull('sanjab_ticket_messages.seen_at')
-                ->whereRaw('sanjab_ticket_messages.created_at IN (select MAX(created_at) from sanjab_ticket_messages where sanjab_ticket_messages.ticket_id = sanjab_tickets.id)');
+            $query->whereColumn(config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').'.user_id', '=', $this->getTable().'.user_id')
+                ->whereNull(config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').'.seen_at')
+                ->whereRaw(config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').'.created_at IN (select MAX(created_at) from '.config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').' where '.config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages').'.ticket_id = '.$this->getTable().'.id)');
         });
     }
 

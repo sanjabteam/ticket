@@ -20,13 +20,6 @@ use SanjabTicket\Observers\TicketMessageObserver;
 class TicketMessage extends Model
 {
     /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'sanjab_ticket_messages';
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -114,6 +107,16 @@ class TicketMessage extends Model
         parent::boot();
 
         static::observe(TicketMessageObserver::class);
+    }
+
+    /**
+     * Get the table associated with the model.
+     *
+     * @return string
+     */
+    public function getTable()
+    {
+        return config('sanjab-ticket.tables.ticket_messages', 'sanjab_ticket_messages');
     }
 
     /* -------------------------------- Mutators -------------------------------- */

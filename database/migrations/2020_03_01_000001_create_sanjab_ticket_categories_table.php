@@ -13,7 +13,7 @@ class CreateSanjabTicketCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('sanjab_ticket_categories', function (Blueprint $table) {
+        Schema::create(config('sanjab-ticket.tables.ticket_categories', 'sanjab_ticket_categories'), function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('color')->nullable();
             $table->string('name');
@@ -27,6 +27,6 @@ class CreateSanjabTicketCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sanjab_ticket_categories');
+        Schema::dropIfExists(config('sanjab-ticket.tables.ticket_categories', 'sanjab_ticket_categories'));
     }
 }

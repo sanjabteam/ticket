@@ -14,7 +14,7 @@ return [
         | User model class.
         |--------------------------------------------------------------------------
         */
-        'model' => \App\User::class,
+        'model' => \App\Models\User::class,
 
         /*
         |--------------------------------------------------------------------------
@@ -100,5 +100,17 @@ return [
             */
             'client' => null,
         ]
-    ]
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Models table names.
+    |--------------------------------------------------------------------------
+    */
+    'tables' => [
+        'tickets'           => 'sanjab_tickets',
+        'ticket_categories' => 'sanjab_ticket_categories',
+        'ticket_messages'   => 'sanjab_ticket_messages',
+        'ticket_priorities' => 'sanjab_ticket_priorities',
+    ],
 ];

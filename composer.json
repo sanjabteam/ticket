@@ -16,13 +16,14 @@
         }
     ],
     "require": {
-        "php": "^7.2",
-        "illuminate/support": "^5.8|^6|^7",
+        "php": "^7.3",
+        "illuminate/support": "^7|^8",
         "sanjabteam/sanjab": "*"
     },
     "autoload": {
         "psr-4": {
-            "SanjabTicket\\": "src"
+            "SanjabTicket\\": "src",
+            "SanjabTicket\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {

@@ -13,7 +13,7 @@ class CreateSanjabTicketsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sanjab_tickets', function (Blueprint $table) {
+        Schema::create(config('sanjab-ticket.tables.tickets', 'sanjab_tickets'), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->{ config('sanjab-ticket.database.type') }('user_id');
             $table->unsignedSmallInteger('category_id')->nullable();
@@ -30,13 +30,13 @@ class CreateSanjabTicketsTable extends Migration
 
             $table->foreign('category_id')
                     ->references('id')
-                    ->on('sanjab_ticket_categories')
+                    ->on(config('sanjab-ticket.tables.ticket_categories', 'sanjab_ticket_categories'))
                     ->onDelete('set null')
                     ->onUpdate('cascade');
 
             $table->foreign('priority_id')
                     ->references('id')
-                    ->on('sanjab_ticket_priorities')
+                    ->on(config('sanjab-ticket.tables.ticket_priorities', 'sanjab_ticket_priorities'))
                     ->onDelete('set null')
                     ->onUpdate('cascade');
         });
@@ -49,6 +49,6 @@ class CreateSanjabTicketsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sanjab_tickets');
+        Schema::dropIfExists(config('sanjab-ticket.tables.tickets', 'sanjab_tickets'));
     }
 }
