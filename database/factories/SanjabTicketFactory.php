@@ -43,7 +43,7 @@ class SanjabTicketFactory extends Factory
     {
         return $this->afterCreating(function (Ticket $ticket) {
             $userModel = config('sanjab-ticket.database.model');
-            $randomNumber = $this->faker->numberBetween(0, 10);
+            $randomNumber = $this->faker->numberBetween(2, 10);
             $createdAt = $ticket->created_at;
             $randomUserId = $userModel::inRandomOrder()->first()->{ config('sanjab-ticket.database.id') };
             foreach (range(0, $randomNumber) as $range) {

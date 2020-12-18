@@ -1,12 +1,11 @@
 # Support ticketing for [Sanjab](https://github.com/sanjabteam/sanjab)
 
-- [Support ticketing for Sanjab](#support-ticketing-for-sanjab)
-  - [Installation](#installation)
-  - [Getting started](#getting-started)
-  - [Configuration](#configuration)
-  - [Notification](#notification)
-  - [Client-side](#client-side)
-  - [License](#license)
+- [Installation](#installation)
+- [Getting started](#getting-started)
+- [Configuration](#configuration)
+- [Notification](#notification)
+- [Client-side](#client-side)
+- [License](#license)
 
 ## Installation
 
@@ -92,20 +91,22 @@ Provide some ticket category/priority.
 > Make sure you wrote seeder for users before this seeder and make sure you have more than 1 user.
 
 ```bash
-php artisan make:seeder TicketsTableSeeder
+php artisan make:seeder TicketSeeder
 ```
 
-Open TicketsTableSeeder and provide some data.
+Open TicketSeeder and provide some data.
 
 ```php
 <?php
 
+namespace Database\Seeders;
+
+use App\Models\Ticket;
+use App\Models\TicketCategory;
 use Illuminate\Database\Seeder;
-use SanjabTicket\Models\Ticket;
-use SanjabTicket\Models\TicketCategory;
 use SanjabTicket\Models\TicketPriority;
 
-class TicketsTableSeeder extends Seeder
+class TicketSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -125,7 +126,7 @@ class TicketsTableSeeder extends Seeder
         TicketCategory::create(['name' => 'Criticism', 'color' => '#ff9800']);
         TicketCategory::create(['name' => 'Sue', 'color' => '#ff0000']);
 
-        factory(Ticket::class, 50)->create();
+        Ticket::factory(50)->create();
     }
 }
 ```

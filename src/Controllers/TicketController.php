@@ -218,10 +218,7 @@ class TicketController extends CrudController
                 return $response;
             }
         }
-        if ($request->wantsJson()) {
-            $item = $this->itemResponse($ticket);
-            return $item;
-        }
+
         return view('sanjab-ticket::ticket', get_defined_vars());
     }
 
