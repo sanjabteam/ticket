@@ -255,7 +255,7 @@ And now make a new ticket.
 ```bash
 php artisan tinker
 Psy Shell v0.9.12 (PHP 7.2.12 — cli) by Justin Hileman
->>> factory(\SanjabTicket\Models\Ticket::class)->create()
+>>> \SanjabTicket\Models\Ticket::factory()->create()
 ```
 
 ![Screenshot](./images/screenshots/screenshot4.JPG)
