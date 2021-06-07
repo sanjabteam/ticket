@@ -60,7 +60,7 @@ Add ticket controllers to `controllers` in `config/sanjab.php`:
 ],
 ```
 
-and add provider to plugins/providers:
+and add provider to plugins/providers in `config/sanjab.php`:
 
 ```php
 'plugins' => [
